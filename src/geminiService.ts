@@ -1,6 +1,11 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+// AI Studio 환경은 process.env, 빌드된 환경은 import.meta.env를 사용합니다.
+const API_KEY = (typeof process !== 'undefined' && process.env?.GEMINI_API_KEY) || 
+                (import.meta.env?.VITE_GEMINI_API_KEY) || 
+                "";
+
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export interface ExampleSentence {
   english: string;
@@ -8,7 +13,7 @@ export interface ExampleSentence {
 }
 
 export async function generateExample(word: string, meaning: string): Promise<ExampleSentence> {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!API_KEY) {
     return {
       english: `I like this ${word}.`,
       korean: `나는 이 ${word}이(가) 좋아요.`
